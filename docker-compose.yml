@@ -35,5 +35,15 @@ services:
       - ~/.composer:/composer
     command: composer install --ignore-platform-reqs --no-scripts
 
+  frontend:
+    image: nginx:alpine
+    container_name: tic-tac-toe-frontend
+    ports:
+      - "3000:80"
+    volumes:
+      - ./frontend/:/usr/share/nginx/html
+    networks:
+      - tic-tac-toe
+
 networks:
   tic-tac-toe:

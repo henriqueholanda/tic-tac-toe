@@ -1,0 +1,45 @@
+h1 {
+    color: rgb(42, 52, 171);
+    text-align: center;
+}
+
+.content {
+    max-width: 980px;
+    margin: 0 auto;
+}
+
+.board {
+    border-spacing: 5px;
+    margin: 0 auto;
+}
+
+.cell {
+    height: 50px;
+    width: 70px;
+    padding-top: 20px;
+    border: 2px solid rgba(0,0,0,1);
+    text-align: center;
+    font-weight: bold;
+    font-size: 30px;
+}
+
+.notifications {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    padding: 10px 0;
+    font-size: 18px;
+}
+
+.message {
+    border-spacing: 5px;
+    margin: 0 auto;
+    position: center;
+    width: 50%;
+    color: rgb(255, 255, 255);
+}
+
+.restart {
+    margin: auto;
+    width: 50%;
+    padding: 10px;
+}
