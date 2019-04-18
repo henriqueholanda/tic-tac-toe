@@ -31,7 +31,7 @@ services:
     image: composer
     container_name: tic-tac-toe-composer
     volumes:
-      - .:/app/
+      - ./backend/:/app/
       - ~/.composer:/composer
     command: composer install --ignore-platform-reqs --no-scripts
 
