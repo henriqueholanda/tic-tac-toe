@@ -1,0 +1,39 @@
+version: '3'
+
+services:
+  nginx:
+    image: nginx:alpine
+    container_name: tic-tac-toe-nginx
+    ports:
+      - "3001:80"
+    volumes:
+      - ./backend/:/var/www
+      - ./backend/docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+    links:
+      - api
+    networks:
+      - tic-tac-toe
+
+  api:
+    build:
+      context: backend
+      dockerfile: docker/php/Dockerfile
+    container_name: tic-tac-toe-api
+    volumes:
+      - ./backend/:/var/www
+      - ./backend/docker/php/php.ini:/usr/local/etc/php/php.ini
+    depends_on:
+      - composer
+    networks:
+      - tic-tac-toe
+
+  composer:
+    image: composer
+    container_name: tic-tac-toe-composer
+    volumes:
+      - .:/app/
+      - ~/.composer:/composer
+    command: composer install --ignore-platform-reqs --no-scripts
+
+networks:
+  tic-tac-toe:
