@@ -6,3 +6,8 @@ game:
   path: /v1/game/status
   controller: App\Controller\GameController::status
   methods: [POST]
+
+move:
+  path: /v1/bot/{team}/move
+  controller: App\Controller\MoveController::move
+  methods: [POST]
