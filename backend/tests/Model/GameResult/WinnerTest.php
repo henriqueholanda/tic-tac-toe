@@ -9,103 +9,19 @@ use PHPUnit\Framework\TestCase;
 
 class WinnerTest extends TestCase
 {
-    public function testHasWinnerOnFirstRow()
+    /**
+     * @dataProvider boardWithWinnerProvider
+     */
+    public function testBoardWithGameWinner($board)
     {
-        $board = [
-            ['X', 'X', 'X'],
-            ['O', 'O', 'X'],
-            ['X', 'O', 'O'],
-        ];
         $this->assertTrue(Winner::check($this->mockGame($board)));
     }
 
-    public function testHasWinnerOnSecondRow()
+    /**
+     * @dataProvider boardWithoutWinnerProvider
+     */
+    public function testBoardWithoutGameWinner($board)
     {
-        $board = [
-            ['O', 'X', 'O'],
-            ['X', 'X', 'X'],
-            ['X', 'O', 'O'],
-        ];
-        $this->assertTrue(Winner::check($this->mockGame($board)));
-    }
-
-    public function testHasWinnerOnThirdRow()
-    {
-        $board = [
-            ['O', 'X', 'O'],
-            ['X', 'O', 'O'],
-            ['X', 'X', 'X'],
-        ];
-        $this->assertTrue(Winner::check($this->mockGame($board)));
-    }
-
-    public function testHasWinnerOnLeftDiagonal()
-    {
-        $board = [
-            ['O', 'X', 'X'],
-            ['X', 'O', 'O'],
-            ['X', 'X', 'O'],
-        ];
-        $this->assertTrue(Winner::check($this->mockGame($board)));
-    }
-
-    public function testHasWinnerOnRightDiagonal()
-    {
-        $board = [
-            ['O', 'X', 'O'],
-            ['X', 'O', 'O'],
-            ['O', 'X', 'X'],
-        ];
-        $this->assertTrue(Winner::check($this->mockGame($board)));
-    }
-
-    public function testHasWinnerOnFirstColumn()
-    {
-        $board = [
-            ['O', 'X', 'O'],
-            ['O', 'O', 'X'],
-            ['O', 'X', 'X'],
-        ];
-        $this->assertTrue(Winner::check($this->mockGame($board)));
-    }
-
-    public function testHasWinnerOnSecondColumn()
-    {
-        $board = [
-            ['O', 'X', 'O'],
-            ['X', 'X', 'O'],
-            ['O', 'X', 'X'],
-        ];
-        $this->assertTrue(Winner::check($this->mockGame($board)));
-    }
-
-    public function testHasWinnerOnThirdColumn()
-    {
-        $board = [
-            ['X', 'X', 'O'],
-            ['X', 'O', 'O'],
-            ['O', 'X', 'O'],
-        ];
-        $this->assertTrue(Winner::check($this->mockGame($board)));
-    }
-
-    public function testHasNoWinner()
-    {
-        $board = [
-            ['X', '', ''],
-            ['', 'O', ''],
-            ['', 'X', 'O'],
-        ];
-        $this->assertFalse(Winner::check($this->mockGame($board)));
-    }
-
-    public function testIsDrawGame()
-    {
-        $board = [
-            ['X', 'X', 'O'],
-            ['O', 'X', 'X'],
-            ['X', 'O', 'O'],
-        ];
         $this->assertFalse(Winner::check($this->mockGame($board)));
     }
 
@@ -129,5 +45,87 @@ class WinnerTest extends TestCase
             ->method('getBoard')
             ->willReturn($this->mockBoardContent($content));
         return $mock;
+    }
+
+    public function boardWithoutWinnerProvider()
+    {
+        return [
+            'game not finished' => [
+                [
+                    ['X', '', ''],
+                    ['', 'O', ''],
+                    ['', 'X', 'O'],
+                ]
+            ],
+            'draw game' => [
+                [
+                    ['X', 'X', 'O'],
+                    ['O', 'X', 'X'],
+                    ['X', 'O', 'O'],
+                ]
+            ]
+        ];
+    }
+
+    public function boardWithWinnerProvider()
+    {
+        return [
+            'winner on first row' => [
+                [
+                    ['X', 'X', 'X'],
+                    ['O', 'O', 'X'],
+                    ['X', 'O', 'O'],
+                ]
+            ],
+            'winner on second row' => [
+                [
+                    ['O', 'X', 'O'],
+                    ['X', 'X', 'X'],
+                    ['X', 'O', 'O'],
+                ]
+            ],
+            'winner on third row' => [
+                [
+                    ['O', 'X', 'O'],
+                    ['X', 'O', 'O'],
+                    ['X', 'X', 'X'],
+                ]
+            ],
+            'winner on left diagonal' => [
+                [
+                    ['O', 'X', 'X'],
+                    ['X', 'O', 'O'],
+                    ['X', 'X', 'O'],
+                ]
+            ],
+            'winner on right diagonal' => [
+                [
+                    ['O', 'X', 'O'],
+                    ['X', 'O', 'O'],
+                    ['O', 'X', 'X'],
+                ]
+            ],
+            'winner on first column' => [
+                [
+                    ['O', 'X', 'O'],
+                    ['O', 'O', 'X'],
+                    ['O', 'X', 'X'],
+                ]
+            ],
+            'winner on second column' => [
+                [
+                    ['O', 'X', 'O'],
+                    ['X', 'X', 'O'],
+                    ['O', 'X', 'X'],
+                ]
+            ],
+            'winner on third column' => [
+                [
+                    ['X', 'X', 'O'],
+                    ['X', 'O', 'O'],
+                    ['O', 'X', 'O'],
+                ]
+            ],
+        ];
     }
 }
