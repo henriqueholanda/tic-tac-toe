@@ -1,10 +1,20 @@
 <?php
 namespace App\Model\Move;
 
+use App\Entity\Position;
 use App\Exception\InvalidMoveException;
+use App\Model\Randomizer;
 
 class BotMove implements MoveInterface
 {
+    /** @var Randomizer */
+    private $randomizer;
+
+    public function __construct(Randomizer $randomizer)
+    {
+        $this->randomizer = $randomizer;
+    }
+
     /**
      * Makes a move using the actual game board state, against the player.
      *
@@ -28,14 +38,49 @@ class BotMove implements MoveInterface
      */
     public function makeMove(array $boardState, string $playerUnit = 'X'): array
     {
+        $position = $this->getAvailablePosition($boardState);
+        return [
+            $position->getRow(),
+            $position->getColumn(),
+            $playerUnit
+        ];
+    }
+
+    /**
+     * @param array
+     *
+     * @throws InvalidMoveException
+     * @return Position
+     */
+    private function getAvailablePosition(array $boardState) : Position
+    {
+        $availablePositions = $this->getAvailableBoardPositions($boardState);
+
+        if (count($availablePositions) < 1) {
+            throw new InvalidMoveException('Bot can\'t make a movement.');
+        }
+
+        $randomRow = $this->randomizer->randomizeIndex(array_keys($availablePositions));
+        $randomColumn = $this->randomizer->randomizeValue(array_values($availablePositions[$randomRow]));
+
+        return new Position($randomRow, $randomColumn);
+    }
+
+    /**
+     * @param array
+     *
+     * @return array
+     */
+    private function getAvailableBoardPositions(array $boardState) : array
+    {
+        $available = [];
         foreach ($boardState as $rowNumber => $row) {
             foreach ($row as $columnNumber => $column) {
                 if (empty($column)) {
-                    return [$rowNumber, $columnNumber, $playerUnit];
+                    $available[$rowNumber][] = $columnNumber;
                 }
             }
         }
-
-        throw new InvalidMoveException('Bot can\'t make a movement.');
+        return $available;
     }
 }

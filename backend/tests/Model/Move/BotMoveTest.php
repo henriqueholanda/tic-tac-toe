@@ -3,17 +3,11 @@ namespace App\Tests\Model\Move;
 
 use App\Exception\InvalidMoveException;
 use App\Model\Move\BotMove;
+use App\Model\Randomizer;
 use PHPUnit\Framework\TestCase;
 
 class BotMoveTest extends TestCase
 {
-    /** @var BotMove */
-    private $botMove;
-
-    public function setUp() : void
-    {
-        $this->botMove = new BotMove();
-    }
 
     public function testBotMakeFirstMove()
     {
@@ -23,9 +17,11 @@ class BotMoveTest extends TestCase
             ['', '', ''],
         ];
 
-        $expected = [0, 0, 'X'];
+        $expected = [1, 2, 'X'];
+        $randomizer = $this->mockRandomizer(1, 2);
+        $botMove = new BotMove($randomizer);
 
-        $this->assertEquals($expected, $this->botMove->makeMove($boardState, 'X'));
+        $this->assertEquals($expected, $botMove->makeMove($boardState, 'X'));
     }
 
     public function testBotMakeMove()
@@ -36,9 +32,11 @@ class BotMoveTest extends TestCase
             ['', '', ''],
         ];
 
-        $expected = [1, 0, 'O'];
+        $expected = [2, 1, 'O'];
+        $randomizer = $this->mockRandomizer(2, 1);
+        $botMove = new BotMove($randomizer);
 
-        $this->assertEquals($expected, $this->botMove->makeMove($boardState, 'O'));
+        $this->assertEquals($expected, $botMove->makeMove($boardState, 'O'));
     }
 
     public function testBotCanNotMakeMoveWhenGameIsOver()
@@ -50,6 +48,15 @@ class BotMoveTest extends TestCase
         ];
 
         $this->expectException(InvalidMoveException::class);
-        $this->botMove->makeMove($boardState, 'O');
+        $botMove = new BotMove(new Randomizer());
+        $botMove->makeMove($boardState, 'O');
+    }
+
+    public function mockRandomizer(int $row, int $column)
+    {
+        $mock = $this->createMock(Randomizer::class);
+        $mock->expects($this->any())->method('randomizeIndex')->willReturn($row);
+        $mock->expects($this->any())->method('randomizeValue')->willReturn($column);
+        return $mock;
     }
 }

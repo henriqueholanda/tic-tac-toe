@@ -1,6 +1,7 @@
 <?php
 namespace App\Tests\Controller;
 
+use App\Model\Randomizer;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class MoveControllerTest extends WebTestCase
@@ -26,8 +27,12 @@ class MoveControllerTest extends WebTestCase
         );
 
         $this->assertEquals(200, $client->getResponse()->getStatusCode());
-        $this->assertEquals(
-            '{"row":0,"column":1}',
+        $this->assertStringContainsString(
+            'row',
+            $client->getResponse()->getContent()
+        );
+        $this->assertStringContainsString(
+            'column',
             $client->getResponse()->getContent()
         );
     }
