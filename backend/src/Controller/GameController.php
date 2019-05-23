@@ -41,6 +41,7 @@ class GameController
     /**
      * @OA\Post(
      *     path="/v1/game/status",
+     *     description="This resource will give you the game status based on game turns.",
      *     @OA\Response(response="200", description="Game is over and have a winner or is a draw"),
      *     @OA\Response(response="204", description="Game is not over"),
      *     @OA\Response(response="422", description="Validation error")

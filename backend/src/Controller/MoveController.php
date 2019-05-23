@@ -21,6 +21,7 @@ class MoveController
     /**
      * @OA\Post(
      *     path="/v1/bot/{team}/move",
+     *     description="This resource will give you the next BOT movement based on game board.",
      *     @OA\Parameter(name="team",
      *         in="path",
      *         required=true,

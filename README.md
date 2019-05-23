@@ -41,94 +41,19 @@ If you want to stop you just need to run the following command:
 $ make stop
 ```
 
-## API Resources
+## API Documentation
 
-### /v1/game/status
+The API documentation was on OpenAPI format.
 
-This resource will give you the game status based on game turns.
+To see the doc you can access `http://localhost:3002` on your browser.
 
-Request example:
-```bash
-Request
-POST http://localhost:3001/v1/game/status
+> Note: You must need to start project before it.
 
-Body:
-Content-Type: application/json
-"boardTurns": [
-    {
-        "team": "X",
-        "row": 1,
-        "column": 2
-    },
-    {
-        "team": "O",
-        "row": 0,
-        "column": 1
-    }
-]
-```
+If you prefer to see doc on other platform, you only need to import the `openapi.json`
+file to them.
 
-Response example when game is not over:
-```bash
-204 No Content
-```
-
-Response example when game is over and has a winner:
-```bash
-200 Ok
-
-{
-    "status": "gameover",
-    "message": "The X team is the winner!",
-    "board" : [
-        ["X", "O", "O"],
-        ["", "X", ""],
-        ["", "", "X"]
-    ]
-}
-```
-
-Response example when game is over in a draw:
-```bash
-200 Ok
-
-{
-    "status": "gameover",
-    "message": "Draw game!",
-    "board" : [
-        ["X", "O", "O"],
-        ["O", "X", "X"],
-        ["X", "O", "O"]
-    ]
-}
-```
-
-### /v1/bot/{team}/move
-
-This resource will give you the next BOT movement based on game board.
-
-Request example:
-```bash
-Request
-POST http://localhost:3001/v1/bot/O/move
-
-Body:
-Content-Type: application/json
-"board" : [
-        ["X", "O", ""],
-        ["X", "", ""],
-        ["", "", ""]
-    ]
-```
-Response example:
-```bash
-200 Ok
-
-{
-    "row": 0,
-    "column": 2,
-}
-```
+> Note: To generate a new version of API doc, you need to run `php bin/console app:generate-doc`
+on API root.
 
 ## Run tests
 
