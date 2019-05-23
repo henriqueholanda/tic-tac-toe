@@ -9,7 +9,17 @@ use InvalidArgumentException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use OpenApi\Annotations as OA;
 
+/**
+ * @OA\Info(
+ *     title="Tic Tac Toe",
+ *     version="0.1",
+ *     @OA\Contact(
+ *         email="contato@henriqueholanda.com.br"
+ *     ),
+ * )
+ */
 class GameController
 {
     /** @var Game */
@@ -29,9 +39,12 @@ class GameController
     }
 
     /**
-     * @param Request $request
-     *
-     * @return Response
+     * @OA\Post(
+     *     path="/v1/game/status",
+     *     @OA\Response(response="200", description="Game is over and have a winner or is a draw"),
+     *     @OA\Response(response="204", description="Game is not over"),
+     *     @OA\Response(response="422", description="Validation error")
+     * )
      */
     public function status(Request $request) : Response
     {

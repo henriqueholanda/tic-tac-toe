@@ -6,6 +6,7 @@ use App\Model\Move\MoveInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use OpenApi\Annotations as OA;
 
 class MoveController
 {
@@ -18,10 +19,16 @@ class MoveController
     }
 
     /**
-     * @param Request $request
-     * @param string $team
-     *
-     * @return Response
+     * @OA\Post(
+     *     path="/v1/bot/{team}/move",
+     *     @OA\Parameter(name="team",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Response(response="200", description="New bot movement"),
+     *     @OA\Response(response="400", description="Error when bot try to move")
+     * )
      */
     public function move(Request $request, string $team) : Response
     {
