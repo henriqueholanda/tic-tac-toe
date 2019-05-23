@@ -45,5 +45,15 @@ services:
     networks:
       - tic-tac-toe
 
+  documentation:
+    image: swaggerapi/swagger-ui
+    container_name: tic-tac-toe-doc
+    ports:
+      - 3002:8080
+    volumes:
+      - ./openapi.json:/doc/openapi.json
+    environment:
+      - SWAGGER_JSON=/doc/openapi.json
+
 networks:
   tic-tac-toe:

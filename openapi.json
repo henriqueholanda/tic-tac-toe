@@ -1,0 +1,53 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Tic Tac Toe",
+        "contact": {
+            "email": "contato@henriqueholanda.com.br"
+        },
+        "version": "0.1"
+    },
+    "paths": {
+        "/v1/game/status": {
+            "post": {
+                "description": "This resource will give you the game status based on game turns.",
+                "operationId": "App\\Controller\\GameController::status",
+                "responses": {
+                    "200": {
+                        "description": "Game is over and have a winner or is a draw"
+                    },
+                    "204": {
+                        "description": "Game is not over"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                }
+            }
+        },
+        "/v1/bot/{team}/move": {
+            "post": {
+                "description": "This resource will give you the next BOT movement based on game board.",
+                "operationId": "App\\Controller\\MoveController::move",
+                "parameters": [
+                    {
+                        "name": "team",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "New bot movement"
+                    },
+                    "400": {
+                        "description": "Error when bot try to move"
+                    }
+                }
+            }
+        }
+    }
+}
