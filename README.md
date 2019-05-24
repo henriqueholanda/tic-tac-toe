@@ -74,6 +74,11 @@ and will be available on the folder `tic-tac-toe/var/coverage`
 $ make lint
 ```
 
+## Run static analysis
+```bash
+$ make analyse
+```
+
 ## Technologies
 
 ### Backend

@@ -92,7 +92,8 @@ class GameTest extends TestCase
 
         try {
             $game->move($playerX, new Position(0, 0));
-        } catch (GameOverException $e) {}
+        } catch (GameOverException $e) {
+        }
 
         $this->expectException(GameOverException::class);
         $this->expectExceptionMessage('Sorry, you can\'t make the given movement, the game has already over.');
