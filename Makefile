@@ -17,5 +17,9 @@ coverage:
 .PHONY: coverage
 
 lint:
+	docker-compose run --rm api ./vendor/bin/phpcs src/ tests/
+.PHONY: lint
+
+analyse:
 	docker-compose run --rm api ./vendor/bin/phpstan analyse src/ tests/
 .PHONY: lint
