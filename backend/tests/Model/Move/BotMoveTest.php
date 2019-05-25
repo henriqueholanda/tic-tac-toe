@@ -147,7 +147,7 @@ class BotMoveTest extends TestCase
                 2,
                 'X'
             ],
-            'bot block on right diagonal on left corner' => [
+            'bot win on right diagonal on left corner' => [
                 [
                     ['O', '', 'X'],
                     ['X', 'X', 'O'],
@@ -157,7 +157,7 @@ class BotMoveTest extends TestCase
                 0,
                 'X'
             ],
-            'bot block on right diagonal on center' => [
+            'bot win on right diagonal on center' => [
                 [
                     ['O', '', 'X'],
                     ['X', '', 'O'],
