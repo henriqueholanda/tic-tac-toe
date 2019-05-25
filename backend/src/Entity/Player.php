@@ -25,4 +25,12 @@ class Player
     {
         return $this->team;
     }
+
+    public function getOpponent() : string
+    {
+        if ($this->team != self::O_TEAM) {
+            return self::O_TEAM;
+        }
+        return self::X_TEAM;
+    }
 }
