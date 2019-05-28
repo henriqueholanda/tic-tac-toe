@@ -7,11 +7,6 @@ start:
   controller: App\Controller\GameController::start
   methods: [POST]
 
-resume:
-  path: /v1/game/{gameId}
-  controller: App\Controller\GameController::resume
-  methods: [GET]
-
 moveBot:
   path: /v1/game/{gameId}/move/bot
   controller: App\Controller\MoveController::moveBot
