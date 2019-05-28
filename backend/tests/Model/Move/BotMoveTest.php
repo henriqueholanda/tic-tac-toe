@@ -1,6 +1,7 @@
 <?php
 namespace App\Tests\Model\Move;
 
+use App\Exception\InvalidMoveException;
 use App\Model\Move\BotMove;
 use App\Model\Randomizer;
 use PHPUnit\Framework\TestCase;
@@ -42,6 +43,21 @@ class BotMoveTest extends TestCase
         $botMove = new BotMove($this->mockRandomizer(0));
 
         $this->assertEquals($expected, $botMove->makeMove($boardState, 'O'));
+    }
+
+    public function testBotTryMoveWhenHaveNoPositionsAvailable()
+    {
+        $boardState = [
+            ['X', 'O', 'X'],
+            ['O', 'O', 'X'],
+            ['X', 'X', 'O'],
+        ];
+        $botMove = new BotMove($this->mockRandomizer(0));
+
+        $this->expectException(InvalidMoveException::class);
+        $this->expectExceptionMessage('Bot can\'t make a movement.');
+
+        $botMove->makeMove($boardState, 'X');
     }
 
     public function boardToWinGameProvider()
