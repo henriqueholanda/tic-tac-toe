@@ -8,30 +8,30 @@
         "version": "0.1"
     },
     "paths": {
-        "/v1/game/status": {
+        "/v1/game": {
             "post": {
-                "description": "This resource will give you the game status based on game turns.",
-                "operationId": "App\\Controller\\GameController::status",
+                "description": "This resource will start a new game and generate an ID to the game.",
+                "operationId": "App\\Controller\\GameController::start",
                 "responses": {
                     "200": {
-                        "description": "Game is over and have a winner or is a draw"
-                    },
-                    "204": {
-                        "description": "Game is not over"
+                        "description": "Game started and ID was generated"
                     },
                     "422": {
-                        "description": "Validation error"
+                        "description": "Validation error because bot player is missing"
+                    },
+                    "500": {
+                        "description": "Internal error"
                     }
                 }
             }
         },
-        "/v1/bot/{team}/move": {
-            "post": {
+        "/v1/game/{gameId}/move/bot": {
+            "get": {
                 "description": "This resource will give you the next BOT movement based on game board.",
-                "operationId": "App\\Controller\\MoveController::move",
+                "operationId": "App\\Controller\\MoveController::moveBot",
                 "parameters": [
                     {
-                        "name": "team",
+                        "name": "gameId",
                         "in": "path",
                         "required": true,
                         "schema": {
@@ -41,10 +41,43 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "New bot movement"
+                        "description": "New bot movement and staus if game is over"
+                    },
+                    "404": {
+                        "description": "The game informed not exists"
                     },
                     "400": {
                         "description": "Error when bot try to move"
+                    }
+                }
+            }
+        },
+        "/v1/game/{gameId}/move/human": {
+            "post": {
+                "description": "This resource will save the informed move of human player.",
+                "operationId": "App\\Controller\\MoveController::moveHuman",
+                "parameters": [
+                    {
+                        "name": "gameId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Return the information when game is over"
+                    },
+                    "204": {
+                        "description": "Move saved and game not over yet"
+                    },
+                    "400": {
+                        "description": "Error when human is trying to move to a filled position"
+                    },
+                    "422": {
+                        "description": "Error on the body request because is missing the move"
                     }
                 }
             }

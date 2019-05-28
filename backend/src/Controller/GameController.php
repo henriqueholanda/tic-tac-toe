@@ -41,8 +41,9 @@ class GameController
      * @OA\Post(
      *     path="/v1/game",
      *     description="This resource will start a new game and generate an ID to the game.",
-     *     @OA\Response(response="200", description="Game started"),
-     *     @OA\Response(response="422", description="Validation error")
+     *     @OA\Response(response="200", description="Game started and ID was generated"),
+     *     @OA\Response(response="422", description="Validation error because bot player is missing"),
+     *     @OA\Response(response="500", description="Internal error")
      * )
      */
     public function start(Request $request) : Response

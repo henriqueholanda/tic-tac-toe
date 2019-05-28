@@ -31,7 +31,8 @@ class MoveController
      *         required=true,
      *         @OA\Schema(type="string")
      *     ),
-     *     @OA\Response(response="200", description="New bot movement"),
+     *     @OA\Response(response="200", description="New bot movement and staus if game is over"),
+     *     @OA\Response(response="404", description="The game informed not exists"),
      *     @OA\Response(response="400", description="Error when bot try to move")
      * )
      */
@@ -77,14 +78,16 @@ class MoveController
     /**
      * @OA\Post(
      *     path="/v1/game/{gameId}/move/human",
-     *     description="This resource will give you the next BOT movement based on game board.",
+     *     description="This resource will save the informed move of human player.",
      *     @OA\Parameter(name="gameId",
      *         in="path",
      *         required=true,
      *         @OA\Schema(type="string")
      *     ),
-     *     @OA\Response(response="200", description="New bot movement"),
-     *     @OA\Response(response="400", description="Error when bot try to move")
+     *     @OA\Response(response="200", description="Return the information when game is over"),
+     *     @OA\Response(response="204", description="Move saved and game not over yet"),
+     *     @OA\Response(response="400", description="Error when human is trying to move to a filled position"),
+     *     @OA\Response(response="422", description="Error on the body request because is missing the move")
      * )
      */
     public function moveHuman(Request $request, string $gameId) : Response
