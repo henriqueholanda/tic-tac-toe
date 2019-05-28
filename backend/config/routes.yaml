@@ -2,12 +2,22 @@
 #    path: /
 #    controller: App\Controller\DefaultController::index
 
-game:
-  path: /v1/game/status
-  controller: App\Controller\GameController::status
+start:
+  path: /v1/game
+  controller: App\Controller\GameController::start
   methods: [POST]
 
-move:
-  path: /v1/bot/{team}/move
-  controller: App\Controller\MoveController::move
+resume:
+  path: /v1/game/{gameId}
+  controller: App\Controller\GameController::resume
+  methods: [GET]
+
+moveBot:
+  path: /v1/game/{gameId}/move/bot
+  controller: App\Controller\MoveController::moveBot
+  methods: [GET]
+
+moveHuman:
+  path: /v1/game/{gameId}/move/human
+  controller: App\Controller\MoveController::moveHuman
   methods: [POST]

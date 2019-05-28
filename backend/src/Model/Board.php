@@ -20,6 +20,16 @@ class Board
     }
 
     /**
+     * @param array $board
+     *
+     * @return void
+     */
+    public function setContent(array $board) : void
+    {
+        $this->board = $board;
+    }
+
+    /**
      * @return array
      */
     public function getContent() : array

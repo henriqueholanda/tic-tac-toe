@@ -39,6 +39,7 @@ class WinnerTest extends TestCase
     private function mockGame(array $content) : Game
     {
         $mock = $this->getMockBuilder(Game::class)
+            ->disableOriginalConstructor()
             ->setMethods(['getBoard'])
             ->getMock();
         $mock->expects($this->any())

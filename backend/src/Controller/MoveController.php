@@ -1,8 +1,12 @@
 <?php
 namespace App\Controller;
 
+use App\Entity\Player;
+use App\Entity\Position;
+use App\Exception\GameNotFoundException;
+use App\Exception\GameOverException;
 use App\Exception\InvalidMoveException;
-use App\Model\Move\MoveInterface;
+use App\Model\Game;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -10,19 +14,19 @@ use OpenApi\Annotations as OA;
 
 class MoveController
 {
-    /** @var MoveInterface */
-    private $move;
+    /** @var Game */
+    private $game;
 
-    public function __construct(MoveInterface $move)
+    public function __construct(Game $game)
     {
-        $this->move = $move;
+        $this->game = $game;
     }
 
     /**
-     * @OA\Post(
-     *     path="/v1/bot/{team}/move",
+     * @OA\Get(
+     *     path="/v1/game/{gameId}/move/bot",
      *     description="This resource will give you the next BOT movement based on game board.",
-     *     @OA\Parameter(name="team",
+     *     @OA\Parameter(name="gameId",
      *         in="path",
      *         required=true,
      *         @OA\Schema(type="string")
@@ -31,14 +35,34 @@ class MoveController
      *     @OA\Response(response="400", description="Error when bot try to move")
      * )
      */
-    public function move(Request $request, string $team) : Response
+    public function moveBot(Request $request, string $gameId) : Response
     {
-        $body = json_decode($request->getContent());
-
         try {
-            $move = $this->move->makeMove(
-                $body->board,
-                $team
+            $move = $this->game->moveBot($gameId);
+
+            if (isset($move['isOver']) && $move['isOver'] == true) {
+                return new JsonResponse(
+                    [
+                        'row' => $move['row'],
+                        'col' => $move['col'],
+                        'status'    => 'gameover',
+                        'message'   => $move['message'],
+                        'board'     => $this->game->getBoard()->getContent()
+                    ]
+                );
+            }
+            return new JsonResponse(
+                [
+                    'row' => $move['row'],
+                    'col' => $move['col']
+                ]
+            );
+        } catch (GameNotFoundException $e) {
+            return new JsonResponse(
+                [
+                    'error' => $e->getMessage()
+                ],
+                JsonResponse::HTTP_NOT_FOUND
             );
         } catch (InvalidMoveException $e) {
             return new JsonResponse(
@@ -48,12 +72,68 @@ class MoveController
                 JsonResponse::HTTP_BAD_REQUEST
             );
         }
+    }
 
-        return new JsonResponse(
-            [
-                'row' => $move[0],
-                'column' => $move[1]
-            ]
-        );
+    /**
+     * @OA\Post(
+     *     path="/v1/game/{gameId}/move/human",
+     *     description="This resource will give you the next BOT movement based on game board.",
+     *     @OA\Parameter(name="gameId",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Response(response="200", description="New bot movement"),
+     *     @OA\Response(response="400", description="Error when bot try to move")
+     * )
+     */
+    public function moveHuman(Request $request, string $gameId) : Response
+    {
+        $body = json_decode($request->getContent());
+
+        try {
+            if (!isset($body->move) || !is_array($body->move)) {
+                return new JsonResponse(
+                    [
+                        'error' => 'Body content must have the array field `move` with the position.'
+                    ],
+                    JsonResponse::HTTP_UNPROCESSABLE_ENTITY
+                );
+            }
+
+            $game = $this->game->status($gameId);
+            $player = new Player($game['humanPlayer']);
+            $move = current($body->move);
+            $position = new Position($move->row, $move->col);
+
+            $this->game->moveHuman(
+                $gameId,
+                $player,
+                $position
+            );
+            return new JsonResponse(null, JsonResponse::HTTP_NO_CONTENT);
+        } catch (GameNotFoundException $e) {
+            return new JsonResponse(
+                [
+                    'error' => $e->getMessage()
+                ],
+                JsonResponse::HTTP_NOT_FOUND
+            );
+        } catch (GameOverException $e) {
+            return new JsonResponse(
+                [
+                    'status'    => 'gameover',
+                    'message'   => $e->getMessage(),
+                    'board'     => $this->game->getBoard()->getContent()
+                ]
+            );
+        } catch (InvalidMoveException $e) {
+            return new JsonResponse(
+                [
+                    'error' => $e->getMessage()
+                ],
+                JsonResponse::HTTP_BAD_REQUEST
+            );
+        }
     }
 }

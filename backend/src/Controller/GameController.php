@@ -2,10 +2,9 @@
 namespace App\Controller;
 
 use App\Entity\Player;
-use App\Entity\Position;
+use App\Exception\GameNotFoundException;
 use App\Exception\GameOverException;
 use App\Model\Game;
-use InvalidArgumentException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -40,48 +39,38 @@ class GameController
 
     /**
      * @OA\Post(
-     *     path="/v1/game/status",
-     *     description="This resource will give you the game status based on game turns.",
-     *     @OA\Response(response="200", description="Game is over and have a winner or is a draw"),
-     *     @OA\Response(response="204", description="Game is not over"),
+     *     path="/v1/game",
+     *     description="This resource will start a new game and generate an ID to the game.",
+     *     @OA\Response(response="200", description="Game started"),
      *     @OA\Response(response="422", description="Validation error")
      * )
      */
-    public function status(Request $request) : Response
+    public function start(Request $request) : Response
     {
         $body = json_decode($request->getContent());
 
         try {
-            if (!isset($body->boardTurns) || !is_array($body->boardTurns)) {
+            if (!isset($body->botPlayer) || empty($body->botPlayer)) {
                 return new JsonResponse(
                     [
-                        'error' => 'Body content must have an array field `boardTurns`.'
+                        'error' => 'Body content must have the field `botPlayer`.'
                     ],
                     JsonResponse::HTTP_UNPROCESSABLE_ENTITY
                 );
             }
-            foreach ($body->boardTurns as $boardTurn) {
-                $this->game->move(
-                    $this->players[$boardTurn->team],
-                    new Position($boardTurn->row, $boardTurn->column)
-                );
-            }
-
-            return new JsonResponse(null, JsonResponse::HTTP_NO_CONTENT);
-        } catch (GameOverException $e) {
+            $gameId = $this->game->start(new Player($body->botPlayer));
             return new JsonResponse(
                 [
-                    'status'    => 'gameover',
-                    'message'   => $e->getMessage(),
-                    'board'     => $this->game->getBoard()->getContent()
-                ]
+                    'gameId' => $gameId
+                ],
+                JsonResponse::HTTP_OK
             );
-        } catch (InvalidArgumentException $e) {
+        } catch (\Exception $e) {
             return new JsonResponse(
                 [
                     'error' => $e->getMessage()
                 ],
-                JsonResponse::HTTP_UNPROCESSABLE_ENTITY
+                JsonResponse::HTTP_INTERNAL_SERVER_ERROR
             );
         }
     }
