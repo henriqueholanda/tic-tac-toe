@@ -39,17 +39,13 @@ class GameController
     public function create(Request $request) : Response
     {
         $body = json_decode($request->getContent());
+        $botPlayer = new Player(Player::X_TEAM);
 
         try {
-            if (!isset($body->botPlayer) || empty($body->botPlayer)) {
-                return new JsonResponse(
-                    [
-                        'error' => 'Body content must have the field `botPlayer`.'
-                    ],
-                    JsonResponse::HTTP_UNPROCESSABLE_ENTITY
-                );
+            if (isset($body->botPlayer) && !empty($body->botPlayer)) {
+                $botPlayer = new Player($body->botPlayer);
             }
-            $gameId = $this->game->start(new Player($body->botPlayer));
+            $gameId = $this->game->start($botPlayer);
             return new JsonResponse(
                 [
                     'gameId' => $gameId
