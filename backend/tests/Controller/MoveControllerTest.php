@@ -1,8 +1,6 @@
 <?php
 namespace App\Tests\Controller;
 
-use App\Service\CacheService;
-use Predis\Client as RedisClient;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class MoveControllerTest extends WebTestCase
@@ -15,7 +13,6 @@ class MoveControllerTest extends WebTestCase
             ->get('App\Service\CacheService');
 
         $cacheService->save($key, $data);
-
     }
 
     public function testRequestBotMoveReturnPosition()
@@ -38,7 +35,7 @@ class MoveControllerTest extends WebTestCase
 
         $client->request(
             'GET',
-            '/v1/game/' . $gameId . '/move/bot',
+            '/v1/games/' . $gameId . '/move/bot',
             [],
             [],
             ['Content-Type' => 'application/json'],
@@ -76,7 +73,7 @@ class MoveControllerTest extends WebTestCase
 
         $client->request(
             'GET',
-            '/v1/game/' . $gameId . '/move/bot',
+            '/v1/games/' . $gameId . '/move/bot',
             [],
             [],
             ['Content-Type' => 'application/json'],
@@ -111,7 +108,7 @@ class MoveControllerTest extends WebTestCase
 
         $client->request(
             'GET',
-            '/v1/game/' . $gameId . '/move/bot',
+            '/v1/games/' . $gameId . '/move/bot',
             [],
             [],
             ['Content-Type' => 'application/json'],
@@ -139,7 +136,7 @@ class MoveControllerTest extends WebTestCase
 
         $client->request(
             'GET',
-            '/v1/game/' . $gameId . '/move/bot',
+            '/v1/games/' . $gameId . '/move/bot',
             [],
             [],
             ['Content-Type' => 'application/json'],
@@ -156,12 +153,12 @@ class MoveControllerTest extends WebTestCase
 
         $client->request(
             'POST',
-            '/v1/game/' . $gameId . '/move/human',
+            '/v1/games/' . $gameId . '/move/human',
             [],
             [],
             ['Content-Type' => 'application/json'],
             '{"move":""}',
-            );
+        );
 
 
         $this->assertEquals(422, $client->getResponse()->getStatusCode());
@@ -187,7 +184,7 @@ class MoveControllerTest extends WebTestCase
 
         $client->request(
             'POST',
-            '/v1/game/' . $gameId . '/move/human',
+            '/v1/games/' . $gameId . '/move/human',
             [],
             [],
             ['Content-Type' => 'application/json'],
@@ -205,7 +202,7 @@ class MoveControllerTest extends WebTestCase
 
         $client->request(
             'POST',
-            '/v1/game/' . $gameId . '/move/human',
+            '/v1/games/' . $gameId . '/move/human',
             [],
             [],
             ['Content-Type' => 'application/json'],
@@ -235,12 +232,12 @@ class MoveControllerTest extends WebTestCase
 
         $client->request(
             'POST',
-            '/v1/game/' . $gameId . '/move/human',
+            '/v1/games/' . $gameId . '/move/human',
             [],
             [],
             ['Content-Type' => 'application/json'],
             '{"move":[{"row":2,"col":2}]}',
-            );
+        );
 
 
         $response = json_decode($client->getResponse()->getContent());
@@ -276,12 +273,12 @@ class MoveControllerTest extends WebTestCase
 
         $client->request(
             'POST',
-            '/v1/game/' . $gameId . '/move/human',
+            '/v1/games/' . $gameId . '/move/human',
             [],
             [],
             ['Content-Type' => 'application/json'],
             '{"move":[{"row":0,"col":0}]}',
-            );
+        );
 
 
         $response = json_decode($client->getResponse()->getContent());

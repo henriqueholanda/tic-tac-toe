@@ -24,7 +24,7 @@ class MoveController
 
     /**
      * @OA\Get(
-     *     path="/v1/game/{gameId}/move/bot",
+     *     path="/v1/games/{gameId}/move/bot",
      *     description="This resource will give you the next BOT movement based on game board.",
      *     @OA\Parameter(name="gameId",
      *         in="path",
@@ -77,7 +77,7 @@ class MoveController
 
     /**
      * @OA\Post(
-     *     path="/v1/game/{gameId}/move/human",
+     *     path="/v1/games/{gameId}/move/human",
      *     description="This resource will save the informed move of human player.",
      *     @OA\Parameter(name="gameId",
      *         in="path",

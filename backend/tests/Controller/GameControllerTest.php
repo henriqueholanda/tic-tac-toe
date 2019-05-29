@@ -5,25 +5,21 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class GameControllerTest extends WebTestCase
 {
-    public function testNewGameWithoutBotPlayerReturnAnError()
+    public function testNewGameWithoutBotPlayerReturnGameId()
     {
         $client = $this->createClient();
-        $botPlayer = [
-            "botPlayer" => ''
-        ];
 
         $client->request(
             'POST',
-            '/v1/game',
+            '/v1/games',
             [],
             [],
             ['Content-Type' => 'application/json'],
-            json_encode($botPlayer)
         );
 
         $response = json_decode($client->getResponse()->getContent());
-        $this->assertEquals(422, $client->getResponse()->getStatusCode());
-        $this->assertEquals($response->error, 'Body content must have the field `botPlayer`.');
+        $this->assertEquals(200, $client->getResponse()->getStatusCode());
+        $this->assertNotEmpty($response->gameId);
     }
 
     public function testStartNewGameReturnGameId()
@@ -35,7 +31,7 @@ class GameControllerTest extends WebTestCase
 
         $client->request(
             'POST',
-            '/v1/game',
+            '/v1/games',
             [],
             [],
             ['Content-Type' => 'application/json'],
