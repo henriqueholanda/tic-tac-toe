@@ -3,16 +3,16 @@
 #    controller: App\Controller\DefaultController::index
 
 start:
-  path: /v1/game
-  controller: App\Controller\GameController::start
+  path: /v1/games
+  controller: App\Controller\GameController::create
   methods: [POST]
 
 moveBot:
-  path: /v1/game/{gameId}/move/bot
+  path: /v1/games/{gameId}/move/bot
   controller: App\Controller\MoveController::moveBot
   methods: [GET]
 
 moveHuman:
-  path: /v1/game/{gameId}/move/human
+  path: /v1/games/{gameId}/move/human
   controller: App\Controller\MoveController::moveHuman
   methods: [POST]

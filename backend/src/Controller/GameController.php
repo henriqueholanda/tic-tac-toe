@@ -2,8 +2,6 @@
 namespace App\Controller;
 
 use App\Entity\Player;
-use App\Exception\GameNotFoundException;
-use App\Exception\GameOverException;
 use App\Model\Game;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -24,29 +22,21 @@ class GameController
     /** @var Game */
     private $game;
 
-    /** @var array */
-    private $players = [];
-
     public function __construct(Game $game)
     {
         $this->game = $game;
-
-        $this->players = [
-            Player::X_TEAM => new Player(Player::X_TEAM),
-            Player::O_TEAM => new Player(Player::O_TEAM),
-        ];
     }
 
     /**
      * @OA\Post(
-     *     path="/v1/game",
+     *     path="/v1/games",
      *     description="This resource will start a new game and generate an ID to the game.",
      *     @OA\Response(response="200", description="Game started and ID was generated"),
      *     @OA\Response(response="422", description="Validation error because bot player is missing"),
      *     @OA\Response(response="500", description="Internal error")
      * )
      */
-    public function start(Request $request) : Response
+    public function create(Request $request) : Response
     {
         $body = json_decode($request->getContent());
 

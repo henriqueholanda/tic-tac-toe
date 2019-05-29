@@ -14,7 +14,7 @@ class GameControllerTest extends WebTestCase
 
         $client->request(
             'POST',
-            '/v1/game',
+            '/v1/games',
             [],
             [],
             ['Content-Type' => 'application/json'],
@@ -35,7 +35,7 @@ class GameControllerTest extends WebTestCase
 
         $client->request(
             'POST',
-            '/v1/game',
+            '/v1/games',
             [],
             [],
             ['Content-Type' => 'application/json'],
