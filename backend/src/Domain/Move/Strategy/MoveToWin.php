@@ -1,10 +1,10 @@
 <?php
-namespace App\Model\Move\Strategy;
+namespace App\Domain\Move\Strategy;
 
-use App\Entity\Player;
-use App\Entity\Position;
+use App\Domain\Player;
+use App\Domain\Position;
 
-class MoveToBlock extends BotMoveStrategy implements MoveStrategyInterface
+class MoveToWin extends BotMoveStrategy implements MoveStrategyInterface
 {
     /** @var array */
     private $boardState;
@@ -23,22 +23,22 @@ class MoveToBlock extends BotMoveStrategy implements MoveStrategyInterface
      */
     public function move() : ?Position
     {
-        $position = $this->getPositionOnRow($this->boardState, $this->player->getOpponent());
+        $position = $this->getPositionOnRow($this->boardState, $this->player->getTeam());
         if (is_array($position)) {
             return new Position($position[0], $position[1]);
         }
 
-        $position = $this->getPositionOnColumn($this->boardState, $this->player->getOpponent());
+        $position = $this->getPositionOnColumn($this->boardState, $this->player->getTeam());
         if (is_array($position)) {
             return new Position($position[0], $position[1]);
         }
 
-        $position = $this->getPositionOnLeftDiagonal($this->boardState, $this->player->getOpponent());
+        $position = $this->getPositionOnLeftDiagonal($this->boardState, $this->player->getTeam());
         if (is_array($position)) {
             return new Position($position[0], $position[1]);
         }
 
-        $position = $this->getPositionOnRightDiagonal($this->boardState, $this->player->getOpponent());
+        $position = $this->getPositionOnRightDiagonal($this->boardState, $this->player->getTeam());
         if (is_array($position)) {
             return new Position($position[0], $position[1]);
         }

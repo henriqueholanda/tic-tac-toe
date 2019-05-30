@@ -2,16 +2,17 @@
     "openapi": "3.0.0",
     "info": {
         "title": "Tic Tac Toe",
+        "description": "This is a functional implementation of Tic Tac Toe game.",
         "contact": {
             "email": "contato@henriqueholanda.com.br"
         },
         "version": "0.1"
     },
     "paths": {
-        "/v1/game": {
+        "/v1/games": {
             "post": {
                 "description": "This resource will start a new game and generate an ID to the game.",
-                "operationId": "App\\Controller\\GameController::start",
+                "operationId": "App\\Controller\\GameController::create",
                 "responses": {
                     "200": {
                         "description": "Game started and ID was generated"
@@ -25,41 +26,15 @@
                 }
             }
         },
-        "/v1/game/{gameId}/move/bot": {
-            "get": {
-                "description": "This resource will give you the next BOT movement based on game board.",
-                "operationId": "App\\Controller\\MoveController::moveBot",
-                "parameters": [
-                    {
-                        "name": "gameId",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "New bot movement and staus if game is over"
-                    },
-                    "404": {
-                        "description": "The game informed not exists"
-                    },
-                    "400": {
-                        "description": "Error when bot try to move"
-                    }
-                }
-            }
-        },
-        "/v1/game/{gameId}/move/human": {
+        "/v1/games/{gameId}/move": {
             "post": {
-                "description": "This resource will save the informed move of human player.",
-                "operationId": "App\\Controller\\MoveController::moveHuman",
+                "description": "This resource will register the human move and generate a new Bot move.",
+                "operationId": "App\\Controller\\MoveController::create",
                 "parameters": [
                     {
                         "name": "gameId",
                         "in": "path",
+                        "description": "The ID of the game",
                         "required": true,
                         "schema": {
                             "type": "string"
@@ -70,8 +45,8 @@
                     "200": {
                         "description": "Return the information when game is over"
                     },
-                    "204": {
-                        "description": "Move saved and game not over yet"
+                    "201": {
+                        "description": "Move saved and bot move was generated"
                     },
                     "400": {
                         "description": "Error when human is trying to move to a filled position"

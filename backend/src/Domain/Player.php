@@ -1,7 +1,9 @@
 <?php
-namespace App\Entity;
+namespace App\Domain;
 
-class Player
+use Serializable;
+
+class Player implements Serializable
 {
     const X_TEAM = 'X';
     const O_TEAM = 'O';
@@ -26,11 +28,32 @@ class Player
         return $this->team;
     }
 
+    /**
+     * @return string
+     */
     public function getOpponent() : string
     {
         if ($this->team != self::O_TEAM) {
             return self::O_TEAM;
         }
         return self::X_TEAM;
+    }
+
+    /**
+     * @return string
+     */
+    public function serialize() : string
+    {
+        return serialize($this->team);
+    }
+
+    /**
+     * @param string $serialized
+     *
+     * @return self
+     */
+    public function unserialize($serialized) : self
+    {
+        return new self(unserialize($serialized));
     }
 }
