@@ -1,5 +1,5 @@
 <?php
-namespace App\Model\Move;
+namespace App\Domain\Move;
 
 interface MoveInterface
 {

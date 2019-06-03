@@ -2,9 +2,9 @@ var Game = function () {};
 
 Game.prototype = {
     constructor: Game,
-    humanTeam: 'X',
+    humanTeam: 'O',
     humanTeamColor: 'blue',
-    botTeam: 'O',
+    botTeam: 'X',
     botTeamColor: 'red',
     humanMove: [],
     gameId: '',
@@ -18,7 +18,7 @@ Game.prototype = {
 
     requestNewGame: function(game) {
         return $.ajax({
-            url: 'http://localhost:3001/v1/game',
+            url: 'http://localhost:3001/v1/games',
             method: 'POST',
             contentType: 'application/json',
             data: JSON.stringify({botPlayer: game.botTeam}),
@@ -40,21 +40,13 @@ Game.prototype = {
                 return !$(this).find('input').val();
             })
             .on('click', function(e) {
-                game.makeHumanMove(
+                game.moveRequest(
                     game,
                     $(this).data('row'),
                     $(this).data('column'),
                     game.humanTeam,
                     game.humanTeamColor
-                ).done(function (data) {
-                    if (data && data.status === 'gameover') {
-                        this.writeMessage('<p>' + data.message + '</p>');
-                        this.removeEvents();
-                        return;
-                    }
-
-                    this.requestBotMove(this);
-                });
+                );
 
                 $(this).unbind('click');
             });
@@ -83,13 +75,32 @@ Game.prototype = {
         $('.cell').unbind('click');
     },
 
-    requestBotMove: function (game) {
+    makeMove: function (game, row, column, team, color) {
+        console.log(game);
         this.removeEvents();
+        $('input[name="position[' + row + '][' + column + ']"]')
+            .val(team)
+            .parent()
+            .append(team)
+            .css("color", color);
+    },
 
-        $.ajax({
-            url: 'http://localhost:3001/v1/game/' + game.gameId + '/move/bot',
-            method: 'GET',
+    moveRequest: function(game, row, column, team, color) {
+
+        game.makeMove(game, row, column, team, color);
+
+        game.humanMove = [];
+        this.humanMove.push({
+            'row'    : row,
+            'col' : column
+        });
+
+        return $.ajax({
+            url: 'http://localhost:3001/v1/games/' + game.gameId + '/move',
+            method: 'POST',
             contentType: 'application/json',
+            data: JSON.stringify({move: this.humanMove}),
+            context: this,
         }).done(function (data) {
             game.makeMove(
                 game,
@@ -101,42 +112,10 @@ Game.prototype = {
 
             if (data && data.status === 'gameover') {
                 game.writeMessage('<p>' + data.message + '</p>');
-                return;
+                game.removeEvents();
             }
 
             game.registerEvents(game);
-        }).fail(function (response) {
-            console.log(response);
-            alert('Something goes wrong, sorry, try again later.');
-        });
-    },
-
-    makeMove: function (game, row, column, team, color) {
-        console.log(game);
-        this.removeEvents();
-        $('input[name="position[' + row + '][' + column + ']"]')
-            .val(team)
-            .parent()
-            .append(team)
-            .css("color", color);
-    },
-
-    makeHumanMove: function(game, row, column, team, color) {
-
-        game.makeMove(game, row, column, team, color);
-
-        game.humanMove = [];
-        this.humanMove.push({
-            'row'    : row,
-            'col' : column
-        });
-
-        return $.ajax({
-            url: 'http://localhost:3001/v1/game/' + game.gameId + '/move/human',
-            method: 'POST',
-            contentType: 'application/json',
-            data: JSON.stringify({move: this.humanMove}),
-            context: this,
         }).fail(function (response) {
             console.log(response);
             alert('Something goes wrong, sorry, try again later.');

@@ -1,5 +1,5 @@
 <?php
-namespace App\Model\Move\Strategy;
+namespace App\Domain\Move\Strategy;
 
 class BotMoveStrategy
 {

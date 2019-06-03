@@ -1,8 +1,12 @@
 <?php
 namespace App\Controller;
 
-use App\Entity\Player;
-use App\Model\Game;
+use App\Domain\Move\BotMove;
+use App\Domain\Storage;
+use App\Domain\Board;
+use App\Domain\Player;
+use App\Domain\Model\Game;
+use Predis\PredisException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -12,6 +16,7 @@ use OpenApi\Annotations as OA;
  * @OA\Info(
  *     title="Tic Tac Toe",
  *     version="0.1",
+ *     description="This is a functional implementation of Tic Tac Toe game.",
  *     @OA\Contact(
  *         email="contato@henriqueholanda.com.br"
  *     ),
@@ -19,12 +24,12 @@ use OpenApi\Annotations as OA;
  */
 class GameController
 {
-    /** @var Game */
-    private $game;
+    /** @var Storage */
+    private $storage;
 
-    public function __construct(Game $game)
+    public function __construct(Storage $storage)
     {
-        $this->game = $game;
+        $this->storage = $storage;
     }
 
     /**
@@ -38,21 +43,22 @@ class GameController
      */
     public function create(Request $request) : Response
     {
-        $body = json_decode($request->getContent());
-        $botPlayer = new Player(Player::X_TEAM);
+        $game = new Game(
+            new Board(),
+            new Player(Player::O_TEAM),
+            new BotMove()
+        );
 
         try {
-            if (isset($body->botPlayer) && !empty($body->botPlayer)) {
-                $botPlayer = new Player($body->botPlayer);
-            }
-            $gameId = $this->game->start($botPlayer);
+            $gameId = $game->start();
+            $this->storage->save($game);
             return new JsonResponse(
                 [
                     'gameId' => $gameId
                 ],
                 JsonResponse::HTTP_OK
             );
-        } catch (\Exception $e) {
+        } catch (PredisException $e) {
             return new JsonResponse(
                 [
                     'error' => $e->getMessage()

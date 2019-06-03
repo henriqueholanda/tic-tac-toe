@@ -1,8 +1,8 @@
 <?php
-namespace App\Model\GameResult;
+namespace App\Domain\GameResult;
 
-use App\Entity\Position;
-use App\Model\Game;
+use App\Domain\Position;
+use App\Domain\Model\Game;
 
 class Winner
 {
@@ -31,7 +31,7 @@ class Winner
      */
     public static function check(Game $game) : bool
     {
-        $board = $game->getBoard()->getContent();
+        $board = $game->getBoard()->getState();
 
         foreach (self::winnerPositions() as $position) {
             $first  = $board[$position[0]->getRow()][$position[0]->getColumn()];

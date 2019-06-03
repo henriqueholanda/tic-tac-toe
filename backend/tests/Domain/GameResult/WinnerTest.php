@@ -1,10 +1,9 @@
 <?php
-namespace App\Tests\Model\GameResult;
+namespace App\Tests\Domain\GameResult;
 
-use App\Model\Board;
-use App\Model\Game;
-use App\Model\GameResult\Draw;
-use App\Model\GameResult\Winner;
+use App\Domain\Board;
+use App\Domain\Model\Game;
+use App\Domain\GameResult\Winner;
 use PHPUnit\Framework\TestCase;
 
 class WinnerTest extends TestCase
@@ -28,10 +27,10 @@ class WinnerTest extends TestCase
     private function mockBoardContent(array $content) : Board
     {
         $mock = $this->getMockBuilder(Board::class)
-            ->setMethods(['getContent'])
+            ->setMethods(['getState'])
             ->getMock();
         $mock->expects($this->any())
-            ->method('getContent')
+            ->method('getState')
             ->willReturn($content);
         return $mock;
     }

@@ -1,7 +1,7 @@
 <?php
-namespace App\Model\GameResult;
+namespace App\Domain\GameResult;
 
-use App\Model\Game;
+use App\Domain\Model\Game;
 
 interface ResultInterface
 {

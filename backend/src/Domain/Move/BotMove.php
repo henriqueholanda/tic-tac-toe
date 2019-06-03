@@ -1,20 +1,19 @@
 <?php
-namespace App\Model\Move;
+namespace App\Domain\Move;
 
-use App\Entity\Position;
+use App\Domain\Position;
 use App\Exception\InvalidMoveException;
-use App\Model\Move\Strategy\MoveToBlock;
-use App\Model\Move\Strategy\MoveToWin;
-use App\Model\Randomizer;
+use App\Domain\Move\Strategy\MoveToBlock;
+use App\Domain\Move\Strategy\MoveToWin;
 
 class BotMove implements MoveInterface
 {
     /** @var Randomizer */
     private $randomizer;
 
-    public function __construct(Randomizer $randomizer)
+    public function __construct()
     {
-        $this->randomizer = $randomizer;
+        $this->randomizer = new Randomizer();
     }
 
     /**

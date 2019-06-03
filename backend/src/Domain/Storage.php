@@ -1,9 +1,11 @@
 <?php
-namespace App\Service;
+namespace App\Domain;
 
+use App\Exception\GameNotFoundException;
+use App\Domain\Model\Game;
 use Predis\Client as RedisClient;
 
-class CacheService
+class Storage
 {
     /**
      * @var string
@@ -27,6 +29,7 @@ class CacheService
     {
         $this->host = $host;
         $this->port = $port;
+        $this->prefix = $prefix;
     }
 
     /**
@@ -46,13 +49,28 @@ class CacheService
         return $this->instance;
     }
 
-    public function save(string $key, string $data)
+    /**
+     * @param Game $game
+     *
+     * @return void
+     */
+    public function save(Game $game) : void
     {
-        $this->getInstance()->set($key, $data);
+        $this->getInstance()->set($game->getId(), $game->serialize());
     }
 
-    public function get(string $key) : ?string
+    /**
+     * @param Game $game
+     *
+     * @return string
+     * @throws GameNotFoundException
+     */
+    public function get(Game $game) : string
     {
-        return $this->getInstance()->get($key);
+        $data = $this->getInstance()->get($game->getId());
+        if (empty($data)) {
+            throw new GameNotFoundException('A game with id `'. $game->getId() .'` does not exists');
+        }
+        return $data;
     }
 }

@@ -1,9 +1,8 @@
 <?php
-namespace App\Tests\Model\Move;
+namespace App\Tests\Domain\Move;
 
 use App\Exception\InvalidMoveException;
-use App\Model\Move\BotMove;
-use App\Model\Randomizer;
+use App\Domain\Move\BotMove;
 use PHPUnit\Framework\TestCase;
 
 class BotMoveTest extends TestCase
@@ -15,8 +14,7 @@ class BotMoveTest extends TestCase
     public function testBotBlockHuman($board, $row, $column, $playerUnit)
     {
         $expected = [$row, $column, $playerUnit];
-        $randomizer = new Randomizer();
-        $botMove = new BotMove($randomizer);
+        $botMove = new BotMove();
 
         $this->assertEquals($expected, $botMove->makeMove($board, $playerUnit));
     }
@@ -27,7 +25,7 @@ class BotMoveTest extends TestCase
     public function testBotMoveToWinGame($board, $row, $column, $playerUnit)
     {
         $expected = [$row, $column, $playerUnit];
-        $botMove = new BotMove($this->mockRandomizer(0));
+        $botMove = new BotMove();
 
         $this->assertEquals($expected, $botMove->makeMove($board, $playerUnit));
     }
@@ -39,10 +37,9 @@ class BotMoveTest extends TestCase
             ['', '', ''],
             ['', '', ''],
         ];
-        $expected = [1, 0, 'O'];
-        $botMove = new BotMove($this->mockRandomizer(0));
+        $botMove = new BotMove();
 
-        $this->assertEquals($expected, $botMove->makeMove($boardState, 'O'));
+        $this->assertNotEmpty($botMove->makeMove($boardState, 'O'));
     }
 
     public function testBotTryMoveWhenHaveNoPositionsAvailable()
@@ -52,7 +49,7 @@ class BotMoveTest extends TestCase
             ['O', 'O', 'X'],
             ['X', 'X', 'O'],
         ];
-        $botMove = new BotMove($this->mockRandomizer(0));
+        $botMove = new BotMove();
 
         $this->expectException(InvalidMoveException::class);
         $this->expectExceptionMessage('Bot can\'t make a movement.');
@@ -310,12 +307,5 @@ class BotMoveTest extends TestCase
                 'O'
             ],
         ];
-    }
-
-    public function mockRandomizer(int $value)
-    {
-        $mock = $this->createMock(Randomizer::class);
-        $mock->expects($this->any())->method('randomizeIntInterval')->willReturn($value);
-        return $mock;
     }
 }

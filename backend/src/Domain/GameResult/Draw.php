@@ -1,7 +1,7 @@
 <?php
-namespace App\Model\GameResult;
+namespace App\Domain\GameResult;
 
-use App\Model\Game;
+use App\Domain\Model\Game;
 
 class Draw implements ResultInterface
 {
@@ -13,7 +13,7 @@ class Draw implements ResultInterface
      */
     public static function check(Game $game) : bool
     {
-        $boardContent = $game->getBoard()->getContent();
+        $boardContent = $game->getBoard()->getState();
 
         foreach ($boardContent as $row) {
             $row = array_filter($row);

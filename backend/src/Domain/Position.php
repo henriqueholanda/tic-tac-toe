@@ -1,9 +1,11 @@
 <?php
-namespace App\Entity;
+namespace App\Domain;
 
+use App\Exception\InvalidPositionException;
 use InvalidArgumentException;
+use Serializable;
 
-class Position
+class Position implements Serializable
 {
     /** @var int */
     private $row;
@@ -77,5 +79,32 @@ class Position
     public function getColumn() : int
     {
         return $this->column;
+    }
+
+    /**
+     * @return string
+     */
+    public function serialize() : string
+    {
+        $data = [
+            'row'       => $this->getRow(),
+            'column'    => $this->getColumn()
+        ];
+        return serialize($data);
+    }
+
+    /**
+     * @param string $serialized
+     *
+     * @return self
+     */
+    public function unserialize($serialized) : self
+    {
+        $data = unserialize($serialized);
+
+        return new self(
+            $data['row'],
+            $data['column']
+        );
     }
 }
